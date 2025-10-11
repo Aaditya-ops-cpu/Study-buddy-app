@@ -19,7 +19,7 @@ def get_api_key() -> Optional[str]:
 
 def call_gemini(prompt: str, temperature: float = 0.2, max_output_tokens: int = 800) -> str:
     """
-    Simple POST to Gemini REST generateContent endpoint.
+    Simple POST to Gemini REST generateContent endpoint (v1beta).
     Uses x-goog-api-key header per Gemini docs.
     """
     api_key = get_api_key()
@@ -33,8 +33,10 @@ def call_gemini(prompt: str, temperature: float = 0.2, max_output_tokens: int = 
                 "parts": [{"text": prompt}]
             }
         ],
-        "temperature": temperature,
-        "max_output_tokens": max_output_tokens
+        "generationConfig": {
+            "temperature": temperature,
+            "maxOutputTokens": max_output_tokens
+        }
     }
 
     headers = {
@@ -47,6 +49,8 @@ def call_gemini(prompt: str, temperature: float = 0.2, max_output_tokens: int = 
         raise RuntimeError(f"Gemini API request failed ({resp.status_code}): {resp.text}")
 
     data = resp.json()
+
+    # Extract text robustly
     def find_first_text(d):
         if isinstance(d, dict):
             for k, v in d.items():
@@ -65,7 +69,6 @@ def call_gemini(prompt: str, temperature: float = 0.2, max_output_tokens: int = 
     text = find_first_text(data)
     if text:
         return text.strip()
-
     return json.dumps(data, indent=2)
 
 def extract_text_from_pdf(file_bytes) -> str:
