@@ -91,6 +91,3 @@ with tabs[3]:
                 out = query_openai(messages, model=model, max_tokens=max_tokens+200)
             st.success("Flashcards Ready:")
             st.text(out)
-
-st.markdown("---")
-st.markdown("Run locally: `pip install streamlit openai` then `streamlit run app.py`")
