@@ -155,11 +155,3 @@ if run_btn:
             result_area.markdown(f"```text\n{output_text}\n```")
         except Exception as e:
             st.error(f"Error: {e}")
-
-st.markdown(
-    "<div style='margin-top:18px; padding:12px; border-radius:8px; background-color:white;'>"
-    "<strong>Note:</strong> This app uses Gemini REST API via x-goog-api-key header. "
-    "Ensure your API key is valid and quota available."
-    "</div>",
-    unsafe_allow_html=True,
-)
