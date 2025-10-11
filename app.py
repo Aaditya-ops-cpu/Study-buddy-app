@@ -84,13 +84,6 @@ st.markdown(
 api_key = get_api_key()
 if not api_key:
     st.warning(f"Gemini API key not found. Set environment variable `{API_KEY_ENV}` before running.")
-    with st.expander("How to set GEMINI_API_KEY"):
-        st.markdown("""
-        1. Create an API key in Google AI Studio / Gemini settings.  
-        2. macOS/Linux → `export GEMINI_API_KEY='YOUR_KEY'`  
-           Windows (PowerShell) → `$env:GEMINI_API_KEY='YOUR_KEY'`  
-        3. In Streamlit Cloud → set environment variable `GEMINI_API_KEY`.
-        """)
 
 col1, col2 = st.columns([1, 2])
 
@@ -116,10 +109,6 @@ with col2:
     result_area = st.empty()
     st.markdown("</div>", unsafe_allow_html=True)
 
-st.markdown(
-    "<div style='margin-top:12px;'><span class='small-muted'>Tip: Include some context for better accuracy.</span></div>",
-    unsafe_allow_html=True,
-)
 
 if run_btn:
     notes_text = pasted or ""
