@@ -125,14 +125,6 @@ st.markdown('<div class="header"><h1 style="margin:6px 0;">AI Study Buddy</h1>'
 api_key = get_api_key()
 if not api_key:
     st.warning(f"Gemini API key not found. Set environment variable `{API_KEY_ENV}` before running. See instructions below.")
-    with st.expander("How to set GEMINI_API_KEY (quick)"):
-        st.markdown("""
-        1. Create an API key in Google AI Studio / Gemini settings (or your Gemini provider console).  
-        2. Locally (macOS / Linux): `export GEMINI_API_KEY='YOUR_KEY'`  
-           On Windows (PowerShell): `$env:GEMINI_API_KEY='YOUR_KEY'`  
-        3. In deployment (Streamlit Cloud / VPS), set an environment variable named `GEMINI_API_KEY`.  
-        The Gemini REST endpoint accepts the key in header `x-goog-api-key`. :contentReference[oaicite:1]{index=1}
-        """, unsafe_allow_html=True)
 
 col1, col2 = st.columns([1, 2])
 
@@ -140,7 +132,7 @@ with col1:
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.subheader("Input")
     mode = st.selectbox("Choose action", ["Explain topic", "Summarize notes", "Generate quiz & flashcards"])
-    st.write("")  # spacing
+    st.write("")  
 
     topic = st.text_input("Enter topic / question", placeholder="e.g. 'How does a CPU work?' or 'Integration by parts'")
 
@@ -164,13 +156,6 @@ with col2:
     st.subheader("Result")
     result_area = st.empty()
     st.markdown("</div>", unsafe_allow_html=True)
-
-with st.container():
-    st.markdown("""
-    <div style="margin-top:12px;">
-    <span class="small-muted">Tip: For best results, include a short context (2-5 sentences) in the notes box or the topic field. The app sends your prompt to the Gemini API — keep sensitive info out.</span>
-    </div>
-    """, unsafe_allow_html=True)
 
 if run_btn:
     # build combined notes text
@@ -222,11 +207,3 @@ if run_btn:
             result_area.code(output_text, language="text")
         except Exception as e:
             st.error(f"Generation failed: {e}")
-st.markdown(
-    """
-    <div style="margin-top:18px; padding:12px; border-radius:8px; background-color: white;">
-    <strong>About the Gemini API usage:</strong> This app uses the Gemini REST `generateContent` endpoint and passes your API key in the `x-goog-api-key` header as shown in the official docs. Make sure your key has permissions and quota. :contentReference[oaicite:2]{index=2}
-    </div>
-    """,
-    unsafe_allow_html=True
-)
