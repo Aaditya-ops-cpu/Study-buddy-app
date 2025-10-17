@@ -4,6 +4,7 @@
 It helps students understand complex topics, summarize notes, create quizzes, and chat with an AI tutor — all in one modern, simple interface.
 
 ---
+[![Live Demo](https://img.shields.io/badge/Live-Demo-blue.svg)](https://aaditya-ops-cpu.github.io/Improved-Text-utility-react-app/)
 
 ## ✨ Features
 
