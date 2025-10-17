@@ -29,27 +29,27 @@ It helps students understand complex topics, summarize notes, create quizzes, an
 ## 🚀 Setup & Installation for your PC
 
 ## 1️⃣ Clone my Repository
-
+``` bash 
 git clone https://github.com/Aaditya-ops-cpu/study-buddy.git
 cd study-buddy
-
+```
 ---
 
 ## 2️⃣ Install Dependencies
 
 To install the required Python packages, run:
-
+``` bash
 pip install -r requirements.txt
-
+```
 
 ---
 
 ## 3️⃣ Run the App
 
 Once installed, start the app with:
-
+``` bash
 streamlit run study_buddy.py
-
+```
 This will open the app in your default web browser.
 
 
