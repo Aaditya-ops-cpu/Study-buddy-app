@@ -120,7 +120,7 @@ This will open the app in your default web browser.
 ## 🤝 Contributing
 
 Pull requests are welcome!
-If you’d like to add features like Quiz generation or Flashcards, feel free to fork the repo and submit PRs.
+If you’d like to add more features to my project please feel free to contribute.
 
 
 
