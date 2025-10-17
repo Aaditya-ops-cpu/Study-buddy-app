@@ -1,4 +1,4 @@
-# 📚 AI-Powered Study Buddy (Gemini Version)
+# 📚 AI-Powered Study Buddy
 
 **Study Buddy** is an AI-driven learning assistant built with **Google Gemini API** and **Streamlit**.  
 It helps students understand complex topics, summarize notes, create quizzes, and chat with an AI tutor — all in one modern, simple interface.
@@ -68,18 +68,6 @@ This will open the app in your default web browser.
 
 4. Copy the key and paste it in the sidebar of the app when prompted.
 
-
-
-
----
-
-## 📂 Project Structure
-
-📁 Study-Buddy-App/
-│
-├── study_buddy.py          # Main Streamlit app file
-├── requirements.txt        # Dependencies
-└── README.md               # Project documentation
 
 
 ---
