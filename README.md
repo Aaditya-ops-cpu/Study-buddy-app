@@ -28,8 +28,8 @@ It helps students understand complex topics, summarize notes, create quizzes, an
  
 ## 🚀 Setup & Installation for your PC
 
-1️⃣ Clone my Repository
-```bash
+## 1️⃣ Clone my Repository
+
 git clone https://github.com/Aaditya-ops-cpu/study-buddy.git
 cd study-buddy
 Got it 👍 — here’s the pure markdown version (no code fences, no extra formatting), exactly like what you can paste straight into your README.md file from Install Dependencies onward 👇
@@ -37,7 +37,7 @@ Got it 👍 — here’s the pure markdown version (no code fences, no extra for
 
 ---
 
-2️⃣ Install Dependencies
+## 2️⃣ Install Dependencies
 
 To install the required Python packages, run:
 
@@ -46,7 +46,7 @@ pip install -r requirements.txt
 
 ---
 
-3️⃣ Run the App
+## 3️⃣ Run the App
 
 Once installed, start the app with:
 
@@ -57,7 +57,7 @@ This will open the app in your default web browser.
 
 ---
 
-🔑 Get Your Gemini API Key
+## 🔑 Get Your Gemini API Key
 
 1. Go to Google AI Studio
 
@@ -75,7 +75,7 @@ This will open the app in your default web browser.
 
 ---
 
-📂 Project Structure
+## 📂 Project Structure
 
 📁 Study-Buddy-App/
 │
@@ -86,7 +86,7 @@ This will open the app in your default web browser.
 
 ---
 
-🧠 How It Works
+## 🧠 How It Works
 
 1. The user enters a Gemini API key in the sidebar.
 
@@ -107,7 +107,7 @@ This will open the app in your default web browser.
 
 ---
 
-🌐 Deployment on Streamlit Cloud
+## 🌐 Deployment on Streamlit Cloud
 
 1. Push your code to a public GitHub repository.
 
@@ -131,16 +131,10 @@ This will open the app in your default web browser.
 
 ---
 
-🤝 Contributing
+## 🤝 Contributing
 
 Pull requests are welcome!
 If you’d like to add features like Quiz generation or Flashcards, feel free to fork the repo and submit PRs.
 
-
-💬 Author
-
-Aaditya Kartha
-📧 [Your Email or GitHub Profile Link]
-💻 Built with ❤️ using Streamlit + Google Gemini AI
 
 
