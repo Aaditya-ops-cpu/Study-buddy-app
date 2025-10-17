@@ -32,8 +32,6 @@ It helps students understand complex topics, summarize notes, create quizzes, an
 
 git clone https://github.com/Aaditya-ops-cpu/study-buddy.git
 cd study-buddy
-Got it 👍 — here’s the pure markdown version (no code fences, no extra formatting), exactly like what you can paste straight into your README.md file from Install Dependencies onward 👇
-
 
 ---
 
