@@ -2,49 +2,77 @@ import os
 import json
 import requests
 import streamlit as st
+
 try:
     from PyPDF2 import PdfReader
 except Exception:
     PdfReader = None
+
 
 GEMINI_MODEL = "gemini-2.5-flash"
 GEMINI_ENDPOINT = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
 API_KEY_ENV = "GEMINI_API_KEY"
 
 def get_api_key():
-    return os.environ.get(API_KEY_ENV)
+    try:
+        return st.secrets[API_KEY_ENV]
+    except Exception:
+        return os.environ.get(API_KEY_ENV)
 
-def call_gemini(prompt: str, temperature: float = 0.4, max_output_tokens: int = 1024) -> str:
+def call_gemini(prompt: str, temperature: float = 0.4, max_output_tokens: int = 4096) -> str:
     api_key = get_api_key()
     if not api_key:
-        raise RuntimeError(f"Gemini API key not found. Please set environment variable {API_KEY_ENV}")
+        raise RuntimeError(
+            f"Gemini API key not found. Add `{API_KEY_ENV}` to Streamlit secrets or OS environment."
+        )
 
     payload = {
         "contents": [{"role": "user", "parts": [{"text": prompt}]}],
         "generationConfig": {
             "temperature": temperature,
             "maxOutputTokens": max_output_tokens,
-            "topP": 0.9
-        }
+            "topP": 0.9,
+        },
     }
 
-    headers = {"Content-Type": "application/json", "x-goog-api-key": api_key}
+    headers = {
+        "Content-Type": "application/json",
+        "x-goog-api-key": api_key,
+    }
+
     resp = requests.post(GEMINI_ENDPOINT, headers=headers, json=payload, timeout=60)
     if resp.status_code != 200:
         raise RuntimeError(f"Gemini API request failed ({resp.status_code}): {resp.text}")
 
     data = resp.json()
+
     try:
-        parts = data["candidates"][0]["content"].get("parts", [])
-        text_blocks = [p.get("text", "") for p in parts if "text" in p]
-        text = "\n".join(text_blocks).strip()
-        if text:
-            return text
+        candidate = data.get("candidates", [{}])[0]
+        content = candidate.get("content", {})
+        parts = content.get("parts", [])
+        texts = []
+
+        for part in parts:
+            if "text" in part:
+                texts.append(part["text"])
+
+        output_text = "\n".join(texts).strip()
+        if output_text:
+            return output_text
+
     except Exception:
         pass
-    if data.get("candidates", [{}])[0].get("finishReason") == "MAX_TOKENS":
-        return "⚠️ Gemini stopped early due to token limit (MAX_TOKENS). Try asking a shorter question."
-    return f"(No text found)\n\nRaw response:\n{json.dumps(data, indent=2)}"
+
+    finish = data.get("candidates", [{}])[0].get("finishReason")
+    if finish == "MAX_TOKENS":
+        return (
+            "⚠️ Gemini stopped because it hit a max token limit. "
+            "Try asking a shorter question or changing the level."
+        )
+
+    return "(No text found)\n\nRaw response:\n" + json.dumps(data, indent=2)
+
+
 
 def extract_text_from_pdf(file_bytes) -> str:
     if PdfReader is None:
@@ -58,20 +86,19 @@ def extract_text_from_pdf(file_bytes) -> str:
             continue
     return "\n".join(texts)
 
-st.set_page_config(page_title="AI Study Buddy", page_icon="🎓", layout="wide")
-st.markdown(
-    """
-    <style>
-    .stApp { background-color: honeydew; color: midnightblue; }
-    .card { background-color: white; border-radius: 12px; padding: 18px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.06); border: 1px solid lightgray; }
-    .header { background-color: lightblue; color: navy; padding: 18px; border-radius: 12px; }
-    .small-muted { color: gray; font-size: 12px; }
-    button[data-baseweb="button"] { border-radius: 10px; padding: 10px 18px; }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+
+
+st.set_page_config(page_title="AI Study Buddy app", page_icon="🎓", layout="wide")
+
+st.markdown("""
+<style>
+.stApp { background-color: honeydew; color: midnightblue; }
+.card { background-color: white; border-radius: 12px; padding: 18px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06); border: 1px solid lightgray; }
+.header { background-color: lightblue; color: navy; padding: 18px; border-radius: 12px; }
+button[data-baseweb="button"] { border-radius: 10px; padding: 10px 18px; }
+</style>
+""", unsafe_allow_html=True)
 
 st.markdown(
     '<div class="header"><h1 style="margin:6px 0;">AI Study Buddy</h1>'
@@ -90,18 +117,24 @@ col1, col2 = st.columns([1, 2])
 with col1:
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.subheader("Input")
+
     mode = st.selectbox("Choose action", ["Explain topic", "Summarize notes", "Generate quiz & flashcards"])
     topic = st.text_input("Enter topic / question", placeholder="e.g. What is CPU?")
     st.markdown("**Attach notes (optional)** — paste text or upload a file (.txt or .pdf).")
+
     pasted = st.text_area("Or paste notes here", height=150)
     uploaded_file = st.file_uploader("Upload text or PDF file (optional)", type=["txt", "pdf", "md"])
+
     st.markdown("---")
     st.subheader("Options")
+
     simple_level = st.selectbox("Explain level", ["Beginner (simple)", "Intermediate", "Advanced"], index=0)
     num_questions = st.slider("Number of quiz questions", 1, 10, 5)
     generate_answers = st.checkbox("Include answers", value=True)
+
     st.markdown("</div>", unsafe_allow_html=True)
     run_btn = st.button("Generate")
+
 
 with col2:
     st.markdown('<div class="card">', unsafe_allow_html=True)
@@ -110,8 +143,10 @@ with col2:
     st.markdown("</div>", unsafe_allow_html=True)
 
 
+
 if run_btn:
     notes_text = pasted or ""
+
     if uploaded_file:
         fname = uploaded_file.name.lower()
         if fname.endswith(".txt") or fname.endswith(".md"):
@@ -121,16 +156,19 @@ if run_btn:
                 notes_text += uploaded_file.getvalue().decode("utf-8", errors="ignore")
         elif fname.endswith(".pdf"):
             notes_text += extract_text_from_pdf(uploaded_file)
+
     if mode == "Explain topic":
         level_map = {
             "Beginner (simple)": "Explain simply with analogies and short examples.",
             "Intermediate": "Explain with moderate detail and examples.",
-            "Advanced": "Explain with technical detail and edge cases."
+            "Advanced": "Explain with technical detail and edge cases.",
         }
         instruction = level_map[simple_level]
         prompt = f"{instruction}\n\nTopic: {topic}\n\nNotes:\n{notes_text}"
+
     elif mode == "Summarize notes":
         prompt = f"Summarize the following notes clearly and concisely with 3 key takeaways:\n\n{topic}\n{notes_text}"
+
     else:
         context = notes_text if notes_text.strip() else topic
         prompt = (
@@ -138,6 +176,7 @@ if run_btn:
             f"Generate {num_questions} multiple-choice questions with answers and explanations. "
             f"Then produce flashcards (Term: ..., Definition: ...)."
         )
+
     with st.spinner("Generating with Gemini..."):
         try:
             output_text = call_gemini(prompt)
